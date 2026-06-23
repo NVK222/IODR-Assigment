@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from iodr.db import db, seed_db
 from iodr.schema import TransactionRequest
 
@@ -13,7 +13,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-@app.get("/api/health")
+@app.get("/health")
 async def check_health():
     return {"status": "ok"}
 
@@ -30,4 +30,6 @@ async def get_user_summary(user_id: str):
 
 @app.get("/ranking")
 async def get_ranking(top: int = 5):
+    if top <= 0:
+        raise HTTPException(400, "Top can only be an integer greater than 0.")
     return await db.get_ranking(top)
