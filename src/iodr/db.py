@@ -65,6 +65,8 @@ class InMemoryDB:
                 The total number of transactions made by the user.
         """
         async with self._lock:
+            if user_id not in self._key_users.keys():
+                return [], 0.0, 0
             user = self._key_users[user_id]
             transactions = sorted(
                 user.transactions, key=lambda tx: tx.created_at, reverse=True
