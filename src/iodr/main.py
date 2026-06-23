@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from iodr.db import db, seed_db
 from iodr.schema import TransactionRequest
 
@@ -11,6 +12,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
+
+app.add_middleware(
+    CORSMiddleware, allow_origins=origins, allow_headers=["*"], allow_methods=["*"]
+)
 
 
 @app.get("/health")
