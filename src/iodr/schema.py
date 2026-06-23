@@ -1,17 +1,16 @@
 from datetime import datetime
-from pydantic import BaseModel
-
-
-class Transaction(BaseModel):
-    transaction_id: str
-    user_id: str
-    amount: float
-    created_at: datetime
+from typing import Annotated
+from pydantic import BaseModel, Field
 
 
 class TransactionRequest(BaseModel):
     user_id: str
-    amount: float
+    amount: Annotated[float, Field(gt=0, description="Amount should be greater than 0")]
+
+
+class Transaction(TransactionRequest):
+    transaction_id: str
+    created_at: datetime
 
 
 class User(BaseModel):
