@@ -13,6 +13,37 @@ export default function Dashboard() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [transactionMessage, setTransactionMessage] = useState<string>("");
     const [topLimit, setTopLimit] = useState<number>(5)
+    const [isServerWakingUp, setIsServerWakingUp] = useState<boolean>(false)
+    const [serverCheckCompleted, setServerCheckCompleted] = useState<boolean>(false)
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        const wakeUpTimeout = setTimeout(() => {
+            if (!serverCheckCompleted) {
+                setIsServerWakingUp(true);
+            }
+        }, 5000);
+
+        fetch(`${API_BASE_URL}/api/health`, { signal: controller.signal })
+            .then((res) => {
+                if (res.ok) {
+                    clearTimeout(wakeUpTimeout);
+                    setIsServerWakingUp(false);
+                    setServerCheckCompleted(true);
+                }
+            })
+            .catch((err) => {
+                if (err.name !== "AbortError") {
+                    console.error("Health check failed:", err);
+                }
+            });
+
+        return () => {
+            clearTimeout(wakeUpTimeout);
+            controller.abort();
+        };
+    }, [])
 
     const getRanking = async () => {
         try {
@@ -104,6 +135,19 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-gray-100 p-6">
+            {isServerWakingUp && (
+                <div className="mb-6 p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl flex items-center gap-3 shadow-xs animate-pulse">
+                    <svg className="w-5 h-5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <div>
+                        <p className="font-semibold text-sm">Server is waking up!</p>
+                        <p className="text-xs text-amber-700 mt-0.5">
+                            The backend is hosted on a free Render service. It takes about 50–60 seconds to spin up on the first request. Thank you for your patience!
+                        </p>
+                    </div>
+                </div>
+            )}
             <header className="max-w-6xl mx-auto mb-8">
                 <h1 className="text-3xl font-bold text-gray-800">Transaction Dashboard</h1>
             </header>
