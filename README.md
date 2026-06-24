@@ -2,6 +2,8 @@
 This is the submission for the Institute of Digital Risk internship assignment.  
 This uses FastAPI backend with React frontend and an In Memory DB.  
 
+## Live Link: https://iodr-assigment.vercel.app/
+
 # Prerequisites
 1. uv.
 2. pnpm with Node installed.
