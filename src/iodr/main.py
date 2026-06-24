@@ -30,6 +30,8 @@ async def check_health():
 async def create_or_get_transaction(
     tx: TransactionRequest, idempotency_key: Annotated[str, Header()]
 ):
+    if not idempotency_key or idempotency_key.strip() == "":
+        raise HTTPException(400, "Idemptoency key cannot be empty")
     return await db.create_or_get_transaction(tx, idempotency_key)
 
 
