@@ -1,20 +1,24 @@
 # Institute of Digital Risk Assignment  
 This is the submission for the Institute of Digital Risk internship assignment.  
 This uses FastAPI backend with React frontend and an In Memory DB.  
-  
+
+# Prerequisites
+1. uv.
+2. pnpm with Node installed.
+
 # Usage
 1. Clone this repository
 2. Run `uv sync`.
 3. Run `uv run fastapi dev` to start the server.
 4. Move to `ui` and run `pnpm install`.
-5. Create a `.env` file following the format of `.env.example`.
+5. Create a `.env` file following the format of `.env.example`. It should store the url to api.
 6. Run `pnpm dev`
 
 # Routes
-- #### POST `/transactions` to create a new transaction.  
-  Query parameter:
+- #### POST `/transaction` to create a new transaction.  
+  Headers:
   `
-  key: A unique uuid key for api idempotency.
+  Idempotency-Key: A unique uuid key for api idempotency.
   `  
   Request Body:  
   ```
