@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException
+from typing import Annotated
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from iodr.db import db, seed_db
 from iodr.schema import TransactionRequest
@@ -26,8 +27,10 @@ async def check_health():
 
 
 @app.post("/transaction")
-async def create_or_get_transaction(tx: TransactionRequest, key: str):
-    return await db.create_or_get_transaction(tx, key)
+async def create_or_get_transaction(
+    tx: TransactionRequest, idempotency_key: Annotated[str, Header()]
+):
+    return await db.create_or_get_transaction(tx, idempotency_key)
 
 
 @app.get("/summary/{user_id}")

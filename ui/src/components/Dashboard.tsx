@@ -41,10 +41,10 @@ export default function Dashboard() {
 
         try {
             const response = await fetch(
-                `${API_BASE_URL}/transaction?key=${idempotencyKey}`,
+                `${API_BASE_URL}/transaction`,
                 {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", "Idempotency-Key": idempotencyKey },
                     body: JSON.stringify({
                         user_id: userIdInput,
                         amount: parseFloat(amountInput)
