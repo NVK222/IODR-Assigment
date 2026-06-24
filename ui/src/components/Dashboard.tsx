@@ -25,7 +25,7 @@ export default function Dashboard() {
             }
         }, 5000);
 
-        fetch(`${API_BASE_URL}/api/health`, { signal: controller.signal })
+        fetch(`${API_BASE_URL}/health`, { signal: controller.signal })
             .then((res) => {
                 if (res.ok) {
                     clearTimeout(wakeUpTimeout);
